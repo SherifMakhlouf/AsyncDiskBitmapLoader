@@ -1,0 +1,25 @@
+
+
+import java.lang.ref.WeakReference;
+
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+
+public class AsyncBitmap extends BitmapDrawable {
+
+	WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
+	public AsyncBitmap(Resources res, Bitmap bitmap,
+			BitmapWorkerTask bitmapWorkerTask) {
+		super(res, bitmap);
+		bitmapWorkerTaskReference = new WeakReference<BitmapWorkerTask>(
+				bitmapWorkerTask);
+	}
+	
+	public BitmapWorkerTask getBitmapWorkerTask()
+	{
+		return bitmapWorkerTaskReference.get();
+	}
+	
+	
+}

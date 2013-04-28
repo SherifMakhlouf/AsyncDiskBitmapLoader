@@ -1,0 +1,82 @@
+package com.lilmak.AsyncDiskBitmapLoader.util;
+
+
+import java.lang.ref.WeakReference;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.widget.ImageView;
+
+public class FileBitmapWorkerTask extends BitmapWorkerTask<String, Void, Bitmap> {
+
+	private final WeakReference<ImageView> imageView;
+
+	
+
+	public FileBitmapWorkerTask(ImageView iv) {
+		imageView = new WeakReference<ImageView>(iv);
+
+	}
+
+	@Override
+	protected Bitmap doInBackground(String... params) {
+		data = params[0];
+		
+		return BitmapFactory.decodeFile((String)data);
+	}
+
+	@Override
+	protected void onPostExecute(Bitmap bitmap) {
+
+		if (isCancelled()) {
+			bitmap = null;
+		}
+
+		if (imageView != null && bitmap != null) {
+
+			final ImageView iv = imageView.get();
+			final FileBitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(iv);
+			if (this == bitmapWorkerTask && imageView != null) {
+				iv.setImageBitmap(bitmap);
+
+			}
+		}
+
+	}
+
+
+
+	
+
+	private static FileBitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+		if (imageView != null) {
+			final Drawable drawable = imageView.getDrawable();
+			if (drawable instanceof AsyncDrawable) {
+				final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+				return (FileBitmapWorkerTask)asyncDrawable.getBitmapWorkerTask();
+			}
+		}
+		return null;
+	}
+
+	private static boolean cancelPotentialWork(String path, ImageView imageView) {
+		final FileBitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+		if (bitmapWorkerTask != null) {
+			final String bitmapData = bitmapWorkerTask.data;
+			if (bitmapData != path) {
+				// Cancel previous task
+				bitmapWorkerTask.cancel(true);
+			} else {
+				// The same work is already in progress
+				return false;
+			}
+		}
+		// No task associated with the ImageView, or an existing task was
+		// cancelled
+		return true;
+	}
+
+}

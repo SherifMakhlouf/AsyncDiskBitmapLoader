@@ -1,0 +1,14 @@
+package com.lilmak.AsyncDiskBitmapLoader.util;
+
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.widget.ImageView;
+
+public interface BitmapWorkerTask {
+
+	public Object getData();
+
+	//public boolean cancelPotentialWork(String path, ImageView imageView);
+
+	//public FileBitmapWorkerTask getBitmapWorkerTask(ImageView imageView);
+}

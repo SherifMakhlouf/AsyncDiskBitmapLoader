@@ -1,0 +1,8 @@
+package com.lilmak.AsyncDiskBitmapLoader.util;
+
+import android.os.AsyncTask;
+
+public abstract class BitmapWorkerTask<X,Y,Z> extends AsyncTask<X, Y, Z>{
+
+	public Object data;
+}

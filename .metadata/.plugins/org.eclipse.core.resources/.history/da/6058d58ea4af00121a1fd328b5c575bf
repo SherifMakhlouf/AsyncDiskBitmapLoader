@@ -1,0 +1,61 @@
+import com.example.bitmaploader.R;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
+public class Loader {
+	static Bitmap holder;
+	Context context;
+
+	public Loader(Context cxt) {
+		context = cxt;
+		holder = BitmapFactory.decodeResource(cxt.getResources(),
+				R.drawable.ic_launcher);
+	}
+
+	
+
+	public void loadBitmap(String path, ImageView imageView, int reqWidth,
+			int reqheight) {
+		if (cancelPotentialWork(path, imageView)) {
+			final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+
+			final AsyncBitmap asyncDrawable = new AsyncBitmap(
+					context.getResources(), holder, task);
+			imageView.setImageDrawable(asyncDrawable);
+			task.execute(path, "" + reqWidth, "" + reqheight);
+		}
+	}
+
+	public static boolean cancelPotentialWork(String path, ImageView imageView) {
+		final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+		if (bitmapWorkerTask != null) {
+			final String bitmapData = bitmapWorkerTask.path;
+			if (bitmapData != path) {
+				// Cancel previous task
+				bitmapWorkerTask.cancel(true);
+			} else {
+				// The same work is already in progress
+				return false;
+			}
+		}
+		// No task associated with the ImageView, or an existing task was
+		// cancelled
+		return true;
+	}
+
+	private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+		if (imageView != null) {
+			final Drawable drawable = imageView.getDrawable();
+			if (drawable instanceof AsyncBitmap) {
+				final AsyncBitmap asyncDrawable = (AsyncBitmap) drawable;
+				return asyncDrawable.getBitmapWorkerTask();
+			}
+		}
+		return null;
+	}
+}

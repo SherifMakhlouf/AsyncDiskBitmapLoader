@@ -1,0 +1,25 @@
+package com.lilmak.AsyncDiskBitmapLoader;
+
+import android.graphics.Bitmap;
+import android.support.v4.util.LruCache;
+
+public class AsyncDiskBitmapLoader {
+
+	private LruCache<Long, Bitmap> lruCache;
+	
+	public AsyncDiskBitmapLoader(LruCache<Long, Bitmap> cache) {
+		cache = lruCache;
+	}
+	
+	/**
+	 * Loads bitmap from File  
+	 * @param path
+	 * 		bitmap path
+	 * @param cached
+	 * 		True if the bitmap should be cached 
+	 */
+	public void loadFromFile(String path,boolean cached)
+	{
+		
+	}
+}

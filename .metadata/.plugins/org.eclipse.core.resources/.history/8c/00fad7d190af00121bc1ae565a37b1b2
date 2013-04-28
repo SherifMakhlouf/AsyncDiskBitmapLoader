@@ -1,0 +1,68 @@
+package com.lilmak.AsyncDiskBitmapLoader;
+
+import com.lilmak.AsyncDiskBitmapLoader.util.AsyncBitmap;
+import com.lilmak.AsyncDiskBitmapLoader.util.BitmapWorkerTask;
+import com.lilmak.AsyncDiskBitmapLoader.util.FileBitmapWorkerTask;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.support.v4.util.LruCache;
+import android.widget.ImageView;
+
+public class AsyncDiskBitmapLoader {
+
+	private LruCache<Long, Bitmap> lruCache;
+
+	public AsyncDiskBitmapLoader(LruCache<Long, Bitmap> cache) {
+		cache = lruCache;
+	}
+
+	/**
+	 * Loads bitmap from File
+	 * 
+	 * @param path
+	 *            bitmap path
+	 * @param cached
+	 *            True if the bitmap should be cached
+	 * @param imageView
+	 *            imageView to load bitmap in
+	 */
+	public void loadFromFile(String path, boolean cached, ImageView imageView) {
+		 if (cancelPotentialWork(resId, imageView)) {
+		        final BitmapWorkerTask task = new FileBitmapWorkerTask(imageView);
+		        final AsyncBitmap asyncDrawable =
+		                new AsyncBitmap(getResources(), mPlaceHolderBitmap, task);
+		        imageView.setImageDrawable(asyncDrawable);
+		        task.execute(resId);
+		    }
+	}
+
+	public static boolean cancelPotentialWork(long data, ImageView imageView) {
+		final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+		if (bitmapWorkerTask != null) {
+			final int bitmapData = bitmapWorkerTask.data;
+			if (bitmapData != data) {
+				// Cancel previous task
+				bitmapWorkerTask.cancel(true);
+			} else {
+				// The same work is already in progress
+				return false;
+			}
+		}
+		// No task associated with the ImageView, or an existing task was
+		// cancelled
+		return true;
+	}
+	
+	private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+		   if (imageView != null) {
+		       final Drawable drawable = imageView.getDrawable();
+		       if (drawable instanceof AsyncDrawable) {
+		           final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+		           return asyncDrawable.getBitmapWorkerTask();
+		       }
+		    }
+		    return null;
+		}
+}

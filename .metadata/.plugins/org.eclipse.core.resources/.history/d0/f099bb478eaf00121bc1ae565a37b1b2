@@ -1,0 +1,5 @@
+package com.lilmak.AsyncDiskBitmapLoader.util;
+
+public class BitmapWorkerTask {
+
+}

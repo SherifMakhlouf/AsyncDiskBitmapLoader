@@ -1,0 +1,10 @@
+package com.lilmak.AsyncDiskBitmapLoader;
+
+import android.support.v4.util.LruCache;
+
+public class AsyncDiskBitmapLoader {
+
+	public AsyncDiskBitmapLoader(LruCache<long, Bitmap>) {
+		
+	}
+}

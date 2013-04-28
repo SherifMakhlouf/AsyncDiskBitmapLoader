@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="android.support.v4.util.LruCache"/>
+<fullyQualifiedTypeName name="android.widget.ImageView"/>
+<fullyQualifiedTypeName name="android.os.AsyncTask"/>
+<fullyQualifiedTypeName name="android.graphics.Bitmap"/>
+<fullyQualifiedTypeName name="com.lilmak.AsyncDiskBitmapLoader.util.BitmapWorkerTask"/>
+<fullyQualifiedTypeName name="com.lilmak.AsyncDiskBitmapLoader.util.FileBitmapWorkerTask"/>
+<fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
+<fullyQualifiedTypeName name="com.lilmak.AsyncDiskBitmapLoader.util.AsyncDrawable"/>
+<fullyQualifiedTypeName name="android.graphics.BitmapFactory"/>
+<fullyQualifiedTypeName name="com.lilmak.asyncdiskbitmaploader.R"/>
+<fullyQualifiedTypeName name="com.lilmak.AsyncDiskBitmapLoader.AsyncDiskBitmapLoader"/>
+<fullyQualifiedTypeName name="com.lilmak.AsyncDiskBitmapLoader.util.TestBitmapWorker"/>
+<fullyQualifiedTypeName name="com.lilmak.AsyncDiskBitmapLoader.util.AsyncBitmap"/>
+</qualifiedTypeNameHistroy>

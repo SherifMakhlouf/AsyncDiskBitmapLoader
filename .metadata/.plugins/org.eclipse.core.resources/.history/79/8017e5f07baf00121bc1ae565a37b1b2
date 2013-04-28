@@ -1,0 +1,45 @@
+package com.lilmak.AsyncDiskBitmapLoader;
+
+import android.graphics.Bitmap;
+import android.support.v4.util.LruCache;
+import android.widget.ImageView;
+
+public class AsyncDiskBitmapLoader {
+
+	private LruCache<Long, Bitmap> lruCache;
+
+	public AsyncDiskBitmapLoader(LruCache<Long, Bitmap> cache) {
+		cache = lruCache;
+	}
+
+	/**
+	 * Loads bitmap from File
+	 * 
+	 * @param path
+	 *            bitmap path
+	 * @param cached
+	 *            True if the bitmap should be cached
+	 * 
+	 */
+	public void loadFromFile(String path, boolean cached, ImageView imageView) {
+
+	}
+
+	public static boolean cancelPotentialWork(int data, ImageView imageView) {
+		final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+		if (bitmapWorkerTask != null) {
+			final int bitmapData = bitmapWorkerTask.data;
+			if (bitmapData != data) {
+				// Cancel previous task
+				bitmapWorkerTask.cancel(true);
+			} else {
+				// The same work is already in progress
+				return false;
+			}
+		}
+		// No task associated with the ImageView, or an existing task was
+		// cancelled
+		return true;
+	}
+}

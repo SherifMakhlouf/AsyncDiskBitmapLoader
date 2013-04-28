@@ -1,0 +1,39 @@
+package com.lilmak.AsyncDiskBitmapLoader.util;
+
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.widget.ImageView;
+
+public abstract class BitmapWorkerTask<X,Y,Z> extends AsyncTask<X, Y, Z>{
+
+	public Object data;
+	
+	private static boolean cancelPotentialWork(String path, ImageView imageView) {
+		final FileBitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+		if (bitmapWorkerTask != null) {
+			final Object bitmapData = bitmapWorkerTask.data;
+			if (bitmapData != path) {
+				// Cancel previous task
+				bitmapWorkerTask.cancel(true);
+			} else {
+				// The same work is already in progress
+				return false;
+			}
+		}
+		// No task associated with the ImageView, or an existing task was
+		// cancelled
+		return true;
+	}
+	
+	protected static FileBitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+		if (imageView != null) {
+			final Drawable drawable = imageView.getDrawable();
+			if (drawable instanceof AsyncDrawable) {
+				final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+				return (FileBitmapWorkerTask)asyncDrawable.getBitmapWorkerTask();
+			}
+		}
+		return null;
+	}
+}

@@ -1,0 +1,25 @@
+package com.lilmak.AsyncDiskBitmapLoader.util;
+
+import java.lang.ref.WeakReference;
+
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+
+public class AsyncBitmap extends BitmapDrawable {
+
+	WeakReference<TestBitmapWorker> bitmapWorkerTaskReference;
+	public AsyncBitmap(Resources res, Bitmap bitmap,
+			TestBitmapWorker bitmapWorkerTask) {
+		super(res, bitmap);
+		bitmapWorkerTaskReference = new WeakReference<TestBitmapWorker>(
+				bitmapWorkerTask);
+	}
+	
+	public TestBitmapWorker getBitmapWorkerTask()
+	{
+		return bitmapWorkerTaskReference.get();
+	}
+	
+	
+}

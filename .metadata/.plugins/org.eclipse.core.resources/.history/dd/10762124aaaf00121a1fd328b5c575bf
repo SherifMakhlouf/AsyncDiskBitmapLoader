@@ -1,0 +1,121 @@
+package com.example.largebitmaps;
+
+
+
+
+
+import android.app.Activity;
+import android.content.Intent;
+
+import com.lilmak.AsyncDiskBitmapLoader.*;
+
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+public class LargeBitmap extends Activity {
+	ImageView iv;
+	private static Bitmap holder;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_large_bitmap);
+
+		iv = (ImageView) findViewById(R.id.imageView1);
+		iv.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setAction(Intent.ACTION_PICK);
+				intent.setType("image/*");
+				startActivityForResult(intent, 0);
+
+			}
+		});
+
+		holder = BitmapFactory.decodeResource(getResources(),
+				R.drawable.ic_launcher);
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+
+		getMenuInflater().inflate(R.menu.large_bitmap, menu);
+		return true;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		String[] projection = { MediaStore.Images.Media.DATA };
+
+		Cursor cursor = getContentResolver().query(data.getData(), projection,
+				null, null, null);
+		cursor.moveToFirst();
+
+		int columnIndex = cursor.getColumnIndex(projection[0]);
+		String filePath = cursor.getString(columnIndex);
+		cursor.close();
+
+		/*
+		 * Bitmap image = decodeSampledBitmapFromResource(filePath,
+		 * iv.getWidth(), iv.getHeight()); iv.setImageBitmap(image);
+		 */
+		//loadBitmap(filePath, iv);
+		AsyncDiskBitmapLoader loader = new AsyncDiskBitmapLoader(getApplicationContext(), null, null);
+		loader.loadFromFile(filePath, false, iv);
+		
+	}
+
+	public void loadBitmap(String path, ImageView imageView) {
+		  if (cancelPotentialWork(path, imageView)) {
+		        final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+		        
+		        final AsyncBitmap asyncDrawable =
+		                new AsyncBitmap(getResources(),holder , task);
+		        imageView.setImageDrawable(asyncDrawable);
+		        task.execute(path);
+		    }
+	}
+
+	public static boolean cancelPotentialWork(String path, ImageView imageView) {
+		final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+		if (bitmapWorkerTask != null) {
+			final String bitmapData = bitmapWorkerTask.path;
+			if (bitmapData != path) {
+				// Cancel previous task
+				bitmapWorkerTask.cancel(true);
+			} else {
+				// The same work is already in progress
+				return false;
+			}
+		}
+		// No task associated with the ImageView, or an existing task was
+		// cancelled
+		return true;
+	}
+
+	private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+		if (imageView != null) {
+			final Drawable drawable = imageView.getDrawable();
+			if (drawable instanceof AsyncBitmap) {
+				final AsyncBitmap asyncDrawable = (AsyncBitmap) drawable;
+				return asyncDrawable.getBitmapWorkerTask();
+			}
+		}
+		return null;
+	}
+
+}
