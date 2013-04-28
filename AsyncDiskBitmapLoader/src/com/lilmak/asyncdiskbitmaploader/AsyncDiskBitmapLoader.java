@@ -49,7 +49,7 @@ public class AsyncDiskBitmapLoader {
 	 */
 	public void loadFromFile(String path, boolean cached, ImageView imageView) {
 		if (FileBitmapWorkerTask.cancelPotentialWork(path, imageView)) {
-			final BitmapWorkerTask task = new FileBitmapWorkerTask(imageView);
+			final BitmapWorkerTask task = new FileBitmapWorkerTask(imageView,null);
 			final AsyncDrawable asyncDrawable = new AsyncDrawable(
 					context.getResources(), holder, task);
 			imageView.setImageDrawable(asyncDrawable);
@@ -57,26 +57,26 @@ public class AsyncDiskBitmapLoader {
 		}
 	}
 
-	/*
-	 * private static boolean cancelPotentialWork(String path, ImageView
-	 * imageView) { final FileBitmapWorkerTask bitmapWorkerTask =
-	 * getBitmapWorkerTask(imageView);
-	 * 
-	 * if (bitmapWorkerTask != null) { final String bitmapData =
-	 * (String)bitmapWorkerTask.getData(); if (bitmapData != path) { // Cancel
-	 * previous task bitmapWorkerTask.cancel(true); } else { // The same work is
-	 * already in progress return false; } } // No task associated with the
-	 * ImageView, or an existing task was // cancelled return true; }
+	/**
+	 * Loads bitmap from File with given options
+	 * @param path
+	 * 		bitmap path
+	 * @param cached
+	 * 		 True if the bitmap should be cached
+	 * @param imageView
+	 *  	imageView to load bitmap in
+	 * @param options
+	 * 		
 	 */
-
-	/*
-	 * private static FileBitmapWorkerTask getBitmapWorkerTask(ImageView
-	 * imageView) { if (imageView != null) { final Drawable drawable =
-	 * imageView.getDrawable(); if (drawable instanceof AsyncDrawable) { final
-	 * AsyncDrawable asyncDrawable = (AsyncDrawable) drawable; return
-	 * (FileBitmapWorkerTask) asyncDrawable .getBitmapWorkerTask(); } } return
-	 * null; }
-	 */
+	public void loadFromFile(String path, boolean cached, ImageView imageView,BitmapFactory.Options options) {
+		if (FileBitmapWorkerTask.cancelPotentialWork(path, imageView)) {
+			final BitmapWorkerTask task = new FileBitmapWorkerTask(imageView,options);
+			final AsyncDrawable asyncDrawable = new AsyncDrawable(
+					context.getResources(), holder, task);
+			imageView.setImageDrawable(asyncDrawable);
+			((FileBitmapWorkerTask) task).execute(path);
+		}
+	}
 
 	/**
 	 * Sets a holder bitmap

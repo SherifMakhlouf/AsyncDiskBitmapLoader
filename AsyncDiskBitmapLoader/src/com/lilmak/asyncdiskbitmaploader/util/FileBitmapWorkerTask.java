@@ -14,9 +14,12 @@ public class FileBitmapWorkerTask extends AsyncTask<String, Void, Bitmap>
 
 	private final WeakReference<ImageView> imageView;
 	private String data;
+	private BitmapFactory.Options options;
 
-	public FileBitmapWorkerTask(ImageView iv) {
+	public FileBitmapWorkerTask(ImageView iv, BitmapFactory.Options op) {
 		imageView = new WeakReference<ImageView>(iv);
+		if (op != null)
+			options = op;
 
 	}
 
@@ -25,8 +28,12 @@ public class FileBitmapWorkerTask extends AsyncTask<String, Void, Bitmap>
 		data = params[0];
 		BitmapFactory.Options options = new Options();
 		options.inSampleSize = 1;
-		//TODO use default options
-		return decodeSampledBitmapFromResource(data, imageView.get().getWidth(), imageView.get().getHeight());
+		// TODO use default options
+		if (this.options != null)
+			return BitmapFactory.decodeFile(data, options);
+		return decodeSampledBitmapFromResource(data,
+				imageView.get().getWidth(), imageView.get().getHeight());
+
 	}
 
 	@Override
@@ -53,7 +60,6 @@ public class FileBitmapWorkerTask extends AsyncTask<String, Void, Bitmap>
 		return data;
 	}
 
-	
 	public static boolean cancelPotentialWork(String path, ImageView imageView) {
 		final FileBitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
@@ -73,7 +79,6 @@ public class FileBitmapWorkerTask extends AsyncTask<String, Void, Bitmap>
 
 	}
 
-	
 	private static FileBitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
 		if (imageView != null) {
 			final Drawable drawable = imageView.getDrawable();
@@ -85,7 +90,7 @@ public class FileBitmapWorkerTask extends AsyncTask<String, Void, Bitmap>
 		}
 		return null;
 	}
-	
+
 	public static int calculateInSampleSize(BitmapFactory.Options options,
 			int reqWidth, int reqHeight) {
 		// Raw height and width of image
